@@ -1,0 +1,7 @@
+fastapi
+prophet==1.0
+
+uvicorn
+yfinance
+
+pystan
