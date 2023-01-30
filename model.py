@@ -56,7 +56,6 @@ def train(ticker="MSFT"):
     df_forecast['ds'] = df_forecast['ds'].dt.tz_localize(None)                      
     #df_forecast['ds'].apply(lambda x: x.replace(tzinfo=None))              #--- attempt #1:  did not work
     #print("TRACE:  (train.df_forecast)", df_forecast.dtypes)
-
     model = Prophet()
     model.fit(df_forecast)
 
