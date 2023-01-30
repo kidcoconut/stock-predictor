@@ -49,7 +49,7 @@ def train(ticker="MSFT"):
 
     #--- ERROR: (Prophet library) ValueError: Column ds has timezone specified, 
     #           which is not supported. Remove timezone.
-    #print("TRACE:  (train.df_forecast)", df_forecast.head().T)
+    print("TRACE:  (train.df_forecast)", df_forecast.head().T)
     #print("TRACE:  (train.df_forecast)", df_forecast.dtypes)
 
     #--- WORKAROUND:  attempt to remove the timestamp attribute

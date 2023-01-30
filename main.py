@@ -47,6 +47,9 @@ class StockOut(StockIn):
     forecast: dict
 
 
+@app.get("/")
+def get_index():
+    return{"message:  stock predictor app - mle10"}
 
 #--- endpoint for prediction api
 @app.post("/predict", response_model=StockOut, status_code=200, tags=["predict"])
