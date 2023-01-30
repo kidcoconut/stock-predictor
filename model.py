@@ -59,7 +59,9 @@ def train(ticker="MSFT"):
     model = Prophet()
     model.fit(df_forecast)
 
-    joblib.dump(model, Path(BASE_DIR).joinpath(f"{ticker}.joblib"))
+    #--- CUSTOM: save to models folder
+    pthModels = Path(BASE_DIR).joinpath("models")
+    joblib.dump(model, pthModels.joinpath(f"{ticker}.joblib"))
 
 
 
@@ -69,12 +71,13 @@ def train(ticker="MSFT"):
     and returns the days included in the forecast as a list of dicts.
 '''
 def predict(ticker="MSFT", days=7):
-    model_file = Path(BASE_DIR).joinpath(f"{ticker}.joblib")
+    #--- CUSTOM: load from models folder
+    pthModels = Path(BASE_DIR).joinpath("models")
+    model_file = pthModels.joinpath(f"{ticker}.joblib")
     if not model_file.exists():
         return False
 
     model = joblib.load(model_file)
-
     future = TODAY + datetime.timedelta(days=days)
 
     dates = pd.date_range(start="2020-01-01", end=future.strftime("%m/%d/%Y"),)
@@ -82,10 +85,13 @@ def predict(ticker="MSFT", days=7):
 
     forecast = model.predict(df)
 
-    #model.plot(forecast).savefig(f"{ticker}_plot.png")
-    #model.plot_components(forecast).savefig(f"{ticker}_plot_components.png")
+    #--- CUSTOM: save to plots folder
+    pthPlots = Path(BASE_DIR).joinpath("plots")
+    model.plot(forecast).savefig(pthPlots.joinpath(f"{ticker}_plot.png"))
+    model.plot_components(forecast).savefig(pthPlots.joinpath(f"{ticker}_plot_components.png"))
 
     return forecast.tail(days).to_dict("records")
+
 
 
 '''
@@ -101,7 +107,7 @@ def convert(prediction_list):
 
 
 #--- commenting out this block per Task3, step 2
-#if __name__ == "__main__":
+if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Predict')
     parser.add_argument('--ticker', type=str, default='MSFT', help='Stock Ticker')
     parser.add_argument('--days', type=int, default=7, help='Number of days to predict')
