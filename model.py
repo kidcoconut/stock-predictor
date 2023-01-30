@@ -31,6 +31,11 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent
 TODAY = datetime.date.today()
 
 
+'''
+    train() downloads historical stock data with yfinance, creates a new 
+    Prophet model, fits the model to the stock data, and then serializes 
+    and saves the model as a Joblib file.
+'''
 def train(ticker="MSFT"):
     data = yf.download(ticker, "2020-01-01", TODAY.strftime("%Y-%m-%d"))
 
@@ -41,15 +46,16 @@ def train(ticker="MSFT"):
     df_forecast = df_forecast[["ds", "y"]]
     df_forecast
 
-    #--- ERROR: ValueError: Column ds has timezone specified, which is not supported. Remove timezone.
-    #df_forecast.drop(['timezone'], axis=1)
-    #print("TRACE:  (train.df_forecast)", df_forecast.head().T)
-    print("TRACE:  (train.df_forecast)", df_forecast.dtypes)
 
-    #--- attempt to remove the timestamp attribute
-    df_forecast['ds'] = df_forecast['ds'].dt.tz_localize(None)                      #--- did not work
-    #df_forecast['ds'].apply(lambda x: x.replace(tzinfo=None))
-    print("TRACE:  (train.df_forecast)", df_forecast.dtypes)
+    #--- ERROR: (Prophet library) ValueError: Column ds has timezone specified, 
+    #           which is not supported. Remove timezone.
+    #print("TRACE:  (train.df_forecast)", df_forecast.head().T)
+    #print("TRACE:  (train.df_forecast)", df_forecast.dtypes)
+
+    #--- WORKAROUND:  attempt to remove the timestamp attribute
+    df_forecast['ds'] = df_forecast['ds'].dt.tz_localize(None)                      
+    #df_forecast['ds'].apply(lambda x: x.replace(tzinfo=None))              #--- attempt #1:  did not work
+    #print("TRACE:  (train.df_forecast)", df_forecast.dtypes)
 
     model = Prophet()
     model.fit(df_forecast)
@@ -57,6 +63,12 @@ def train(ticker="MSFT"):
     joblib.dump(model, Path(BASE_DIR).joinpath(f"{ticker}.joblib"))
 
 
+
+'''
+    predict() loads and deserializes the saved model, generates a new 
+    forecast, creates images of the forecast plot and forecast components, 
+    and returns the days included in the forecast as a list of dicts.
+'''
 def predict(ticker="MSFT", days=7):
     model_file = Path(BASE_DIR).joinpath(f"{ticker}.joblib")
     if not model_file.exists():
@@ -76,6 +88,11 @@ def predict(ticker="MSFT", days=7):
 
     return forecast.tail(days).to_dict("records")
 
+
+'''
+    convert() takes the list of dicts from predict and outputs a dict of 
+    dates and forecasted values; e.g., {"07/02/2020": 200}).
+'''
 def convert(prediction_list):
     output = {}
     for data in prediction_list:
@@ -84,6 +101,7 @@ def convert(prediction_list):
     return output
 
 
+#--- commenting out this block per Task3, step 2
 #if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Predict')
     parser.add_argument('--ticker', type=str, default='MSFT', help='Stock Ticker')
