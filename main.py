@@ -24,10 +24,18 @@ kstr_descr = """
     * Build a basic time series model to predict stock prices
     * Deploy a FastAPI to AWS EC2
 """
+
+tags_metadata = [
+    {
+        "name": "predict",
+        "description": "Prophet stock predictions.",
+    },
+]
 app = FastAPI(
     title="MLE10 Week12:  Iain McKone",
     description=kstr_descr,
-    version="0.0.1"
+    version="0.0.1",
+    openapi_tags=tags_metadata
 )
 
 # pydantic models
@@ -41,7 +49,7 @@ class StockOut(StockIn):
 
 
 #--- endpoint for prediction api
-@app.post("/predict", response_model=StockOut, status_code=200)
+@app.post("/predict", response_model=StockOut, status_code=200, tags=["predict"])
 def get_prediction(payload: StockIn):
     ticker = payload.ticker
     days = payload.days
@@ -56,16 +64,3 @@ def get_prediction(payload: StockIn):
         "days": days,
         "forecast": convert(prediction_list)}
     return response_object
-
-
-''' For Execution, testing:
-    - Run the app (locally):
-        uvicorn main:app --reload --workers 1 --host 0.0.0.0 --port 49300
-    
-    - Test the endpoint (locally)
-        curl \
-        --header "Content-Type: application/json" \
-        --request POST \
-        --data '{"ticker":"MSFT", "days":7}' \
-        http://0.0.0.0:49300/predict
-'''
