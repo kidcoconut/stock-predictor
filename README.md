@@ -34,6 +34,8 @@ By the end of this lesson, you will be able to:
 
 
 # Environment
+- ssh connectivity
+    - ssh -i "stock-pred-fastapi-mle10-wk12-imckone.pem" ec2-user@ec2-54-161-241-106.compute-1.amazonaws.com
     * Python:  v3.8.16
         * for Amazon EC2 hosting, to upgrade python, run:
             * sudo amazon-linux-extras install python3.8
@@ -51,4 +53,3 @@ By the end of this lesson, you will be able to:
         - spent _hours_ trying to configure dependencies to get it to work
         - was able to get a test landing page to work, but not the model train or predict
         - ran out of time
-         
