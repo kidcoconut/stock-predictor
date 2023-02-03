@@ -1,5 +1,5 @@
-#--- local dev python is 3.10.8!
-FROM python:3.8.16-slim-bullseye
+#--- local dev python is 3.8.16!
+FROM python:3.8.16-slim-buster
 
 # RUN apt-get -y update  && apt-get install -y \
 #     python3-dev \
@@ -29,4 +29,4 @@ CMD ["uvicorn", "main:app", "--workers=1", "--host=0.0.0.0", "--port=49300", "--
 #       from python:3.10-slim-bullseye                      size:  520mb
 #       from python:3.10-alpine                             size:  FAILED
 #       from python:3.8.16-slim-bullseye                    size:  409mb
-#       from python:3.8.16-slim-buster                      size:  520mb
+#       from python:3.8.16-slim-buster                      size:  402mb
