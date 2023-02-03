@@ -49,17 +49,19 @@ def train(ticker="MSFT"):
 
     #--- ERROR: (Prophet library) ValueError: Column ds has timezone specified, 
     #           which is not supported. Remove timezone.
-    print("TRACE:  (train.df_forecast)", df_forecast.head().T)
+    print("TRACE:  (train.df_forecast)", df_forecast.head())
     #print("TRACE:  (train.df_forecast)", df_forecast.dtypes)
 
     #--- WORKAROUND:  attempt to remove the timestamp attribute
     df_forecast['ds'] = df_forecast['ds'].dt.tz_localize(None)                      
     #df_forecast['ds'].apply(lambda x: x.replace(tzinfo=None))              #--- attempt #1:  did not work
     #print("TRACE:  (train.df_forecast)", df_forecast.dtypes)
+    print("TRACE:  (train):  fitting the model ...")
     model = Prophet()
     model.fit(df_forecast)
 
     #--- CUSTOM: save to models folder
+    print("TRACE:  (train):  persisting the model ...")
     pthModels = Path(BASE_DIR).joinpath("models")
     joblib.dump(model, pthModels.joinpath(f"{ticker}.joblib"))
 
@@ -113,7 +115,10 @@ if __name__ == "__main__":
     parser.add_argument('--days', type=int, default=7, help='Number of days to predict')
     args = parser.parse_args()
     
+    print("TRACE (model.py::main):  cmd line call initiated ...")
+    print("TRACE (model.py::main):  train ticker ... ", args.ticker)
     train(args.ticker)
+    print("TRACE (model.py::main):  running prediction ... ")
     prediction_list = predict(ticker=args.ticker, days=args.days)
     output = convert(prediction_list)
     print(output)

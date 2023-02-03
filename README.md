@@ -26,15 +26,20 @@ By the end of this lesson, you will be able to:
         uvicorn main:app --reload --workers 1 --host 0.0.0.0 --port 49300
     
     * Test the endpoint (locally)
-        curl \
-        --header "Content-Type: application/json" \
-        --request POST \
-        --data '{"ticker":"MSFT", "days":7}' \
-        http://0.0.0.0:49300/predict
+        curl --header "Content-Type: application/json" --request POST --data '{"ticker":"MSFT", "days":7}' http://0.0.0.0:49300/predict
+
+
+# Quality Assurance:
+    * conda activate wk12_prod
+    * locally test: (python calls)
+        * create a new model
+        * run a prediction
+    * docker test (repeat tast plan)
+    * EC2 deploy and test (repeat test plan)
 
 
 # Environment
-- ssh connectivity
+- EC2 ssh connectivity
     - ssh -i "stock-pred-fastapi-mle10-wk12-imckone.pem" ec2-user@ec2-54-161-241-106.compute-1.amazonaws.com
     * Python:  v3.8.16
         * for Amazon EC2 hosting, to upgrade python, run:
@@ -45,11 +50,13 @@ By the end of this lesson, you will be able to:
             * sudo rm /usr/bin/python  (which is only a link to /usr/bin/python2.7)
             * sudo ln -s /usr/bin/python3.8 /usr/bin/python
 
-#--- ISSUES
-    - developing the fastAPI was very straightforward
-    - however, there were considerable challenges deploying to EC2
-        - course instructions stated a conda env of 3.8
-        - upon deploy to Amazon, their env was 2.7 causing a lot of dependency problems
-        - spent _hours_ trying to configure dependencies to get it to work
-        - was able to get a test landing page to work, but not the model train or predict
-        - ran out of time
+- Docker cmds
+    - to build the image
+        - docker build -t img-stock-prophet:qa .
+    - to run the docker container
+        - docker run -d --rm --name ctr-stock-prophet -p 49300:8000 img-stock-prophet:qa
+    - to start an existing container
+        - docker start -it ctr-stock-prophet /bin/bash 
+        - docker exec -it ctr-stock-prophet /bin/bash
+
+
