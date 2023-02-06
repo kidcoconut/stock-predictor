@@ -1,61 +1,43 @@
->>>  Algorithm Understanding
-Q1:  How does the Prophet Algorithm differ from an LSTM?
-A1:  Prophet is specifically designed for the prediction of time-series data, and is an additive model, consisting of four components:  Yt = g(t) + s(t) + h(t) + e(t), where 
-	- g(t) represents the general trend
-	- s(t) is the seasonality component
-	- h(t) is the holidays component, which have impacts on business results
-	- e(t) is error, accounting for random fluctuations that cannot be explained by the model
-
-	LSTM is a recurrent neural network (RNN) and stands for Long short-term memory.  LSTM the future from sequences of variable lengths, and is not constrained to time-series data alone.  LSTM cells learn the important parts of a sequence observed and discards the less important parts, through gates, which are functions with different learning objectives, such as:
-	- how to compact the data (time series) observed so far
-	- how to combine new input with prior series data
-	- what data to forget and/or discard
-	- what output should represent the prediction for the next step
-
-	Prophet is specifically designed for business time series prediction. It achieves very good results for specific time series data, such as for the stock market, however it can fail spectacularly on time series datasets from other domains. In particular, for time series data where calendar dates do not apply, and where seasonal patterns cannot be learned. Prophet’s advantage is that it requires less hyperparameters for tuning as it is specifically designed to detect patterns in business time series.
-
-	LSTM-based RNNs are likely the most powerful approach to learning from sequential data, where time series is one special case. LSTM models benefit from massive datasets where complex patterns may be observed. Unlike Prophet, it does not rely on specific assumptions about the data such as time series stationarity or the existence of a Date field.  A disadvantage is that LSTM based RNNs are difficult to interpret and it is challenging to gain intuition into their behaviour. Careful hyperparameter tuning is also required in order to achieve good results.
-
-
-
-Q2:  	Why does an LSTM have poor performance against ARIMA and Profit (Prophet?) for Time Series?
-A2:	Although LSTM RNNs are quite powerful for application to time series predictions,  the model can have very poor performance against ARIMA and Prophet.  
-
-This is likely due to LSTM's dependency on large datasets.  Otherwise, its relatively advanced nature lends itself easily to overfitting, despite the usage of regularization terms such as dropout.
-
-
-
 >>>  Interview Readiness
-Q3:  	What is exponential smoothing and why is it used in Time Series Forecasting?
-A3:	Exponential smoothing is a broadly accurate method used for short-term forecasts. 
+Q1:	What does it mean to create a Docker image and why do we use Docker images?
+A1:  	To create a Docker image is a file that acts as a template for configuring, initializing, and running a Docker container.
 
-This technique assigns larger weights to more recent observations while assigning exponentially decreasing weights as the observations get increasingly distant.
+The Docker image is defined through a Docker file, which itself acts as a recipe of instructions for creating a Docker image.
 
-Exponential smoothing is used in Time Series forecasted where a weighted distribution may be of benefit, where more recent data points is the series are more pertinent to the prediction that data that is relatively older.
+Once created, Docker image acts as a snapshot of the system, library, tools, files, application code, configurations and network dependencies required to execute the target container.  They are immutable, which is of great value in environments/projects sensitive to unmanaged change.
 
-There are a handful of Exponential Smoothing methods:  Simple, Double, and Triple.
-	- Single:  Simple smoothing factor (alpha smoothing param); no consideration for trends, or seasonal patterns.  
-	- Double:  Holt's trend, or second order smoothing (alpha plus beta, a decay param);  for linear trends but no seasonal patterns
-	- Triple:  for data with linear trends and seasonal patterns (alpha, beta, plus gamma to comtrol the influence of seasonality);  Holt-Winters Exponential Smoothing
- which refer to the parameters in use, ie alpha (smoothing factor), 
+A Docker image is designed for reusability and can therefore act as a template for the creation of other Docker images as well.
+
+Docker images are reusable assets and are utilized for numerous reasons, including:  the standardization, version control, consistency, security, and reliability of each staging environment (eg dev, qa, uat, prod, and support) across the entire project lifecycle.   Docker images also lend themselves to high portability, persistence, backup, restoration, and automation.  In many cases, they are created, destroyed, and recreated with great ease and flexibility.  This creates additional benefits by reducing any unnecessary use of resources. 
 
 
 
+Q2:	Please explain what is the difference from a Container vs a Virtual Machine?
+A2:	There are several differences between a Container and a Virtual Machine
+	- Virtual Machines (VMs) are designed to share common hypervisor, ie virtualized hardware.  It is an environment that includes a fully functional Guest OS and file system.  The cpu, network, memory and disk is emulated and is virtualized through the hypervisor layer that sits above the physical host hardware.  Each VM can run a uniquely different OS and environment, as long as the underlying hypervisor and hardware can support it.  VMs are considered more heavy-weight (bloated), resource-hungry, and operationally intensive.  This causes them to be relatively less portable than containers, and relatively more expensive.  VMs can be typically several GBs in size, and takes minutes to start up, similar to booting a laptop, or desktop.  The benefits of VMs include:  the ability for apps to have access to all OS resources;  mature and well estabished management and security tools; the flexibility to run several OSes on a single physical machine; and visible cost savings compared to traditional non-virtualized, seperate physical hosts.
 
-Q4:  	What is stationarity? What is seasonality? Why Is Stationarity Important in Time Series Forecasting?
-A4:	Stationarity can be simplistically described as a flat series, one without trend, with constant variance over time, with constant autocorrelation structure over time, and with no periodic fluctuations (ie seasonality).
-
-Generally, stationarity refers to a series of data whose properties do not inherently depend on the timeframe within which the series is observed.  Mathematically, the statistical properties of the series (and/or underlying causes and processes) do not change over time.
-
-Stationarity is an important concept (and goal) as several useful analytical tools and statistical tests and models rely on it.  The concept of stationarity is vital in order to know how to approach the data.  The accepted approach of managing non-stationary data is to remove it through various transformation techniques.  
-
-Conversely, Seasonality is a recurring pattern at some time or event based frequency, whether annually, monthly, weekly, daily, or otherwise. 
+	- Containers are designed to share a common Host OS, OS kernel, and all associated binaries and libraries, ie virtualized OS.  This level of abstraction allows each Container itself to be relatively light compared to VMs.  Containers can be typically several 100MBs in size, and take less than a minute to launch.  This causes them to be more portable, more performant, and more easily manageable.  The additional benefits of Containers include more economic scalability (horizontal and vertical), reduced and simplified security and management updates.
 
 
 
-Q5:  How is seasonality different from cyclicality? 
-Seasonal effects are different from cyclical effects.  Seasonal cycles are observed by definition within one calendar year,  whereas cyclical effects can be observed across time periods shorter or longer than one calendar year. 
+Q3:	What are 5 examples of container orchestration tools (please list tools)?
+A3:	Enterprises require the ability to deploy and manage hundreds and in some cases thousands of containers.  Container orchestration automates the provisioning, deployment, configuration, scheduling, resource allocation, management, scaling, load balancing, traffic routing, monitoring, networking, and security of multiple containers.
+
+	Container orchestration tools include:
+	1. Kubernetes:  	originally developed by Google and open sourced;  well suited to the orchestration of Linux containers 
+	2. Openshift:	Opensource, maintained by RedHat, and built on top of Kubernetes
+	3. Docker Swarm:  well suited to orchestration of Docker containers
+	4. Rancher:	supports management of hybrid Kubernetes clusters:  Google GKE, Amazon EKS, and VMWare vSphere RKE
+	5. Apache Mesos: originally developed by Twitter for infrastructure management and then open sourced.  Mesos is not a dedicated tool for container clusters;  it can also manage VM or physcial machine clustering.
 
 
-Fill in the blanks:
-_A stationarized series_ is predictable, whereas _a seasonal or cyclical time-series_ is not.
+	6. (other not so popular or well known orchestrator) Azure Service Fabric _was_ Microsoft's container orchestrator well-suited for at-scale stateless or stateful microservices implementations across clusters of machines.
+	
+
+
+Q4:	How does a Docker image differ from a Docker container?
+A4:	Docker images differ from Docker containers in several ways.  For example:
+	- Each Docker Container is instanced and run from a single Docker image.
+	- Each Docker Image can instance and run multiple Docker Containers
+	- Docker Images are designed for portability, and immutability (read-only, unchangable).  
+	- Docker Containers are designed to be created and destroyed;  they can be modified during runtime
